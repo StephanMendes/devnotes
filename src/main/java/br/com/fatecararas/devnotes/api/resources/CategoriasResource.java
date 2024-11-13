@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.fatecararas.devnotes.controllers.dtos.CategoriaDTO;
 import br.com.fatecararas.devnotes.model.entities.Categoria;
@@ -42,7 +35,43 @@ public class CategoriasResource {
         service.excluir(id);
     }
 
-    //TODO: Cria o método de alteração de categoria.
+    @ResponseStatus(code = HttpStatus.OK)
+    @PutMapping("/alterar/{id}")
+    public Categoria alterar(@PathVariable("id") Long id, @RequestBody CategoriaDTO dto){
 
-    //TODO: Cria o método de busca por ID de categoria.
+        Categoria categoriaExistente = service.buscarPorId(id);
+
+        if (categoriaExistente == null){
+            throw  new CategoriaNaoEncontradaException("Categoria não encontrada com o ID: " + id);
+        }
+        categoriaExistente.setDescricao(dto.getDescricao());
+
+        return service.salvar(categoriaExistente);
+    }
+
+    @GetMapping("/{id}")
+    public CategoriaDTO findById(@PathVariable("id") Long id){
+        Categoria categoria = service.buscarPorId(id);
+
+        if(cetegoria == null){
+            throw  new CategoriaNaoEncontradaException("Categoria não encontrada com o ID: " + id);
+        }
+        return new CategoriaDTO(categoria);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
